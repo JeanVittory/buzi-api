@@ -1,8 +1,10 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -14,10 +16,11 @@ import { ProductValidator } from './validator';
 @Controller('products')
 class ProductsController {
   constructor(private productService: ProductsService) {}
+
   @Get('/')
-  async getProducts(): Promise<ProductsDTO[] | ProductsDTO> {
+  async getProducts(): Promise<ProductsDTO[]> {
     try {
-      return await this.productService.findAll();
+      return (await this.productService.findAll()) as ProductsDTO[];
     } catch (error) {
       throw error;
     }
@@ -26,16 +29,18 @@ class ProductsController {
   @Get('/:id')
   async getProduct(@Param('id') _id: string) {
     try {
-      return await this.productService.findOne({ _id });
+      const response = await this.productService.findOne({ _id });
+      if (response instanceof Error) throw response;
     } catch (error) {
-      throw error;
+      if (error.code === 11) throw new NotFoundException(error.message);
+      return error;
     }
   }
 
   @Post('/')
   async createProduct(@Body() product: ProductValidator): Promise<ProductsDTO> {
     try {
-      return await this.productService.create(product);
+      return (await this.productService.create(product)) as ProductsDTO;
     } catch (error) {
       throw error;
     }
@@ -56,8 +61,15 @@ class ProductsController {
   @Delete('/:id')
   async deleteProduct(@Param('id') _id: string) {
     try {
-      await this.productService.deleteOne({ _id });
+      const response = await this.productService.deleteOne({ _id });
+
+      if (response.kind === 'ObjectId') {
+        throw response;
+      }
     } catch (error) {
+      if (error.kind === 'ObjectId') {
+        throw new BadRequestException('Object id invalid');
+      }
       throw error;
     }
   }

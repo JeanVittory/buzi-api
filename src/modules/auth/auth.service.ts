@@ -4,9 +4,10 @@ import { Users } from 'src/shared/types';
 import * as argon2 from 'argon2';
 import { usersDTO } from './dto';
 import { JwtService } from '@nestjs/jwt';
-import { SigninUser } from './types';
 import { ErrorHandler } from 'src/shared/tools';
 import { ConfigService } from '@nestjs/config';
+import { SinginValidator, SingupValidator } from './validator';
+import { UserSignup } from './types';
 
 @Injectable()
 class AuthService {
@@ -16,7 +17,7 @@ class AuthService {
     private config: ConfigService,
   ) {}
 
-  async signup(user: Omit<Users, '_id'>) {
+  async signup(user: SingupValidator): Promise<UserSignup | UserSignup[]> {
     try {
       const { password } = user;
       const pwdHashed = await argon2.hash(password);
@@ -29,7 +30,7 @@ class AuthService {
     }
   }
 
-  async signin(user: SigninUser) {
+  async signin(user: SinginValidator): Promise<{ ACCESS_TOKEN: string }> {
     try {
       const { email, password } = user;
       const isUser = await this.usersRepository.findOne({ email });

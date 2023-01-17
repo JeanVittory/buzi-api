@@ -47,13 +47,13 @@ class ProductsService {
   async updateOne(
     productFilterQuery: FilterQuery<Products>,
     product: Partial<Products>,
-  ) {
+  ): Promise<{ id: string }> {
     try {
       const response = await this.productsRepository.updateProduct(
         productFilterQuery,
         product,
       );
-      return productsPatchDTO(response);
+      return productsPatchDTO(response) as { id: string };
     } catch (error) {
       throw error;
     }
