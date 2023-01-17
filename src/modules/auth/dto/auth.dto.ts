@@ -1,4 +1,4 @@
-import { Users } from '../types';
+import { Users } from 'src/shared/types';
 
 export default class UserDTO {
   id: string;
