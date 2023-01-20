@@ -17,14 +17,14 @@ class AuthService {
     private config: ConfigService,
   ) {}
 
-  async signup(user: SingupValidator): Promise<UserSignup | UserSignup[]> {
+  async signup(user: SingupValidator): Promise<UserSignup> {
     try {
       const { password } = user;
       const pwdHashed = await argon2.hash(password);
       const newUser = { ...user, password: pwdHashed };
       const response = await this.usersRepository.create(newUser);
       if (response instanceof Error) throw response;
-      return usersDTO(response);
+      return usersDTO(response) as UserSignup;
     } catch (error) {
       throw error;
     }

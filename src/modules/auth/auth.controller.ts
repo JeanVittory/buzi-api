@@ -7,14 +7,15 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { UserSignup } from './types';
 import { SingupValidator, SinginValidator } from './validator';
 
 @Controller('auth')
 class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
-  async signup(@Body() user: SingupValidator) {
+  async signup(@Body() user: SingupValidator): Promise<UserSignup> {
     try {
       return await this.authService.signup(user);
     } catch (error) {
@@ -25,7 +26,9 @@ class AuthController {
   }
 
   @Post('signin')
-  async signin(@Body() user: SinginValidator) {
+  async signin(
+    @Body() user: SinginValidator,
+  ): Promise<{ ACCESS_TOKEN: string }> {
     try {
       return await this.authService.signin(user);
     } catch (error) {

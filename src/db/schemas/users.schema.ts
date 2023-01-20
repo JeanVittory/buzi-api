@@ -1,5 +1,6 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { ProductAcquired } from 'src/shared/types';
 
 @Schema({
   timestamps: true,
@@ -14,6 +15,8 @@ class Users {
   email: string;
   @Prop({ required: true })
   password: string;
+  @Prop()
+  productsAcquired: ProductAcquired[];
 }
 
 type UserDocument = Users & Document;

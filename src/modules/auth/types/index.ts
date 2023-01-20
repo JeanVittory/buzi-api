@@ -1,2 +1,2 @@
-export * from './signinUser.types';
+export * from './signin.types';
 export * from './signup.types';

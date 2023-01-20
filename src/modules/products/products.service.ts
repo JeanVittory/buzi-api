@@ -8,7 +8,7 @@ import { ProductValidator } from './validator';
 
 @Injectable()
 class ProductsService {
-  constructor(private productsRepository: ProductsRepository) {}
+  constructor(private readonly productsRepository: ProductsRepository) {}
 
   async create(product: ProductValidator) {
     try {

@@ -15,7 +15,7 @@ import { ProductValidator } from './validator';
 
 @Controller('products')
 class ProductsController {
-  constructor(private productService: ProductsService) {}
+  constructor(private readonly productService: ProductsService) {}
 
   @Get('/')
   async getProducts(): Promise<ProductsDTO[]> {

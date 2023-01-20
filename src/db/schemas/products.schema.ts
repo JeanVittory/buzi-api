@@ -14,6 +14,8 @@ class Products {
   address: string;
   @Prop({ required: true })
   price: number;
+  @Prop({ required: true })
+  place: string;
 }
 
 type ProductDocument = Products & Document;

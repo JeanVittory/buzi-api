@@ -6,6 +6,7 @@ interface Products extends ProductDocument {
   date: Date;
   address: string;
   price: number;
+  place: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -16,6 +17,7 @@ type ProductsDTO = {
   date: Date;
   address: string;
   price: number;
+  place: string;
   createdAt: Date;
   updatedAt: Date;
 };
