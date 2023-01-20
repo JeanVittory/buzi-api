@@ -16,6 +16,8 @@ class Products {
   price: number;
   @Prop({ required: true })
   place: string;
+  @Prop({ required: true })
+  thumbnail: string;
 }
 
 type ProductDocument = Products & Document;

@@ -1,4 +1,9 @@
-import { ProductAcquired } from './productAcquired.types';
+type ProductAcquired = {
+  productName: string;
+  date: Date;
+  ticketsQuantity: number;
+  ticketPriceByUnity: number;
+};
 
 type Users = {
   _id: string;

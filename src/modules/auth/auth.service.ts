@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from 'src/db/repositories';
-import { Users } from 'src/shared/types';
 import * as argon2 from 'argon2';
 import { usersDTO } from './dto';
 import { JwtService } from '@nestjs/jwt';

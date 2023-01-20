@@ -4,16 +4,30 @@ class ProductDTO {
   date: Date;
   address: string;
   price: number;
+  place: string;
+  thumbnail: string;
   createdAt: Date;
   updatedAt: Date;
-  constructor({ _id, name, date, address, price, createdAt, updatedAt }) {
+  constructor({
+    _id,
+    name,
+    date,
+    address,
+    price,
+    createdAt,
+    updatedAt,
+    place,
+    thumbnail,
+  }) {
     this.id = _id;
     this.name = name;
     this.address = address;
     this.date = date;
     this.price = price;
+    this.place = place;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.thumbnail = thumbnail;
   }
 }
 

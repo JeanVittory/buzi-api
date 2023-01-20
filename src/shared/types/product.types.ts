@@ -5,6 +5,7 @@ interface Products extends ProductDocument {
   name: string;
   date: Date;
   address: string;
+  thumbnail: string;
   price: number;
   place: string;
   createdAt: Date;
