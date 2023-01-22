@@ -8,26 +8,29 @@ class ProductDTO {
   thumbnail: string;
   createdAt: Date;
   updatedAt: Date;
+  time: string;
   constructor({
     _id,
     name,
     date,
     address,
     price,
-    createdAt,
-    updatedAt,
     place,
+    time,
     thumbnail,
+    updatedAt,
+    createdAt,
   }) {
     this.id = _id;
     this.name = name;
     this.address = address;
     this.date = date;
+    this.time = time;
     this.price = price;
     this.place = place;
+    this.thumbnail = thumbnail;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
-    this.thumbnail = thumbnail;
   }
 }
 
@@ -41,7 +44,7 @@ const productsDTO = (products) => {
   }
 };
 
-class ProductPatchDTO {
+class ProductIdDTO {
   id: string;
 
   constructor({ _id }) {
@@ -49,14 +52,14 @@ class ProductPatchDTO {
   }
 }
 
-const productsPatchDTO = (products) => {
+const productIdDTO = (products) => {
   if (Array.isArray(products)) {
     return products.map((product) => {
-      return { ...new ProductPatchDTO(product) };
+      return { ...new ProductIdDTO(product) };
     });
   } else {
-    return { ...new ProductPatchDTO(products) };
+    return { ...new ProductIdDTO(products) };
   }
 };
 
-export { productsDTO, productsPatchDTO };
+export { productsDTO, productIdDTO };

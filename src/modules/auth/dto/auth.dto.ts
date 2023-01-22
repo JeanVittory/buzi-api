@@ -8,8 +8,8 @@ export default class UserDTO {
   constructor(user: Users) {
     this.id = user._id;
     this.name = user.name;
-    this.email = user.email;
     this.lastname = user.lastname;
+    this.email = user.email;
   }
 }
 const usersDTO = (users: Users) => {

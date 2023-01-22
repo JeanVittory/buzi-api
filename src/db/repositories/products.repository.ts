@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { ProductValidator } from 'src/modules/products/validator';
 import { Products } from 'src/shared/types';
+
 import { ProductDocument } from '../schemas';
 
 @Injectable()
@@ -26,31 +27,48 @@ class ProductsRepository {
       return error;
     }
   }
-  async findOne(productFilterQuery: Partial<Products>): Promise<Products> {
+
+  async findOne(
+    productFilterQuery: FilterQuery<Products>,
+  ): Promise<ProductDocument> {
     try {
-      return await this.productModel.findOne({ productFilterQuery });
+      const response = await this.productModel.findOne({
+        ...productFilterQuery,
+      });
+      return response;
     } catch (error) {
       return error;
     }
   }
 
-  async updateProduct(
-    productFilterQuery: FilterQuery<Products>,
-    product: Partial<Products>,
-  ): Promise<Products> {
+  async findOneById(id: string) {
     try {
-      return await this.productModel.findOneAndUpdate(
-        productFilterQuery,
+      const response = await this.productModel.findById({ _id: id });
+      return response;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async updateProductById(
+    id: string,
+    product: Partial<Products>,
+  ): Promise<ProductDocument> {
+    try {
+      const response = await this.productModel.findByIdAndUpdate(
+        { _id: id },
         product,
       );
+      return response;
     } catch (error) {
       return error;
     }
   }
 
-  async deleteProduct(productFilterQuery: FilterQuery<Products>): Promise<any> {
+  async deleteProduct(id: string): Promise<ProductDocument> {
     try {
-      return await this.productModel.deleteOne(productFilterQuery);
+      const response = await this.productModel.findByIdAndDelete({ _id: id });
+      return response;
     } catch (error) {
       return error;
     }

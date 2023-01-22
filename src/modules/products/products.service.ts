@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { FilterQuery } from 'mongoose';
+import { FilterQuery, isValidObjectId } from 'mongoose';
 import { ProductsRepository } from 'src/db/repositories';
-import { ErrorHandler } from 'src/shared/tools';
+import { InvalidIdException, NotFoundException } from 'src/shared/tools';
 import { Products, ProductsDTO } from 'src/shared/types';
-import { productsDTO, productsPatchDTO } from './dto';
+
+import { productsDTO, productIdDTO } from './dto';
 import { ProductValidator } from './validator';
 
 @Injectable()
@@ -28,40 +29,54 @@ class ProductsService {
     }
   }
 
-  async findOne(productFilterQuery: Partial<Products>): Promise<ProductsDTO> {
+  async findOne(
+    productFilterQuery: FilterQuery<Products>,
+  ): Promise<ProductsDTO> {
     try {
       const isProduct = await this.productsRepository.findOne(
         productFilterQuery,
       );
-      if (!isProduct)
-        throw new ErrorHandler({
-          message: 'The product do not exist',
-          code: 11,
-        });
+      if (isProduct === null) throw new NotFoundException();
       return productsDTO(isProduct) as ProductsDTO;
     } catch (error) {
       throw error;
     }
   }
 
-  async updateOne(
-    productFilterQuery: FilterQuery<Products>,
-    product: Partial<Products>,
-  ): Promise<{ id: string }> {
+  async findOneById(id: string) {
     try {
-      const response = await this.productsRepository.updateProduct(
-        productFilterQuery,
-        product,
-      );
-      return productsPatchDTO(response) as { id: string };
+      if (!isValidObjectId(id)) throw new InvalidIdException();
+      const response = await this.productsRepository.findOneById(id);
+      if (response === null) throw new NotFoundException();
+      return response;
     } catch (error) {
       throw error;
     }
   }
 
-  async deleteOne(productFilterQuery: FilterQuery<Products>) {
+  async updateProductById(
+    id: string,
+    product: Partial<Products>,
+  ): Promise<{ id: string }> {
     try {
-      return await this.productsRepository.deleteProduct(productFilterQuery);
+      if (!isValidObjectId(id)) throw new InvalidIdException();
+      const response = await this.productsRepository.updateProductById(
+        id,
+        product,
+      );
+      if (response === null) throw new NotFoundException();
+      return productIdDTO(response) as { id: string };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteOneById(id: string): Promise<{ id: string }> {
+    try {
+      if (!isValidObjectId(id)) throw new InvalidIdException();
+      const response = await this.productsRepository.deleteProduct(id);
+      if (response === null) throw new NotFoundException();
+      return productIdDTO(response) as { id: string };
     } catch (error) {
       throw error;
     }

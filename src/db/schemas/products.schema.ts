@@ -11,6 +11,8 @@ class Products {
   @Prop({ required: true })
   date: Date;
   @Prop({ required: true })
+  time: string;
+  @Prop({ required: true })
   address: string;
   @Prop({ required: true })
   price: number;

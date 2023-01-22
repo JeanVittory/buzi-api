@@ -10,6 +10,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { ProductsDTO } from 'src/shared/types';
+
 import { ProductsService } from './products.service';
 import { ProductValidator } from './validator';
 
@@ -27,13 +28,14 @@ class ProductsController {
   }
 
   @Get('/:id')
-  async getProduct(@Param('id') _id: string) {
+  async getProduct(@Param('id') id: string): Promise<ProductsDTO> {
     try {
-      const response = await this.productService.findOne({ _id });
-      if (response instanceof Error) throw response;
+      const response = await this.productService.findOneById(id);
+      return response;
     } catch (error) {
       if (error.code === 11) throw new NotFoundException(error.message);
-      return error;
+      if (error.code === 50) throw new BadRequestException(error.message);
+      throw error;
     }
   }
 
@@ -48,28 +50,30 @@ class ProductsController {
 
   @Patch('/:id')
   async updateProduct(
-    @Param('id') _id: string,
+    @Param('id') id: string,
     @Body() updateData: Partial<ProductValidator>,
-  ) {
+  ): Promise<{ id: string }> {
     try {
-      return await this.productService.updateOne({ _id }, updateData);
+      const response = await this.productService.updateProductById(
+        id,
+        updateData,
+      );
+      return response;
     } catch (error) {
+      if (error.code === 11) throw new NotFoundException(error.message);
+      if (error.code === 50) throw new BadRequestException(error.message);
       throw error;
     }
   }
 
   @Delete('/:id')
-  async deleteProduct(@Param('id') _id: string) {
+  async deleteProduct(@Param('id') id: string): Promise<{ id: string }> {
     try {
-      const response = await this.productService.deleteOne({ _id });
-
-      if (response.kind === 'ObjectId') {
-        throw response;
-      }
+      const response = await this.productService.deleteOneById(id);
+      return response;
     } catch (error) {
-      if (error.kind === 'ObjectId') {
-        throw new BadRequestException('Object id invalid');
-      }
+      if (error.code === 11) throw new NotFoundException(error.message);
+      if (error.code === 50) throw new BadRequestException(error.message);
       throw error;
     }
   }

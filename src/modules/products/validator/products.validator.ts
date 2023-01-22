@@ -13,6 +13,10 @@ class ProductValidator {
   @IsNotEmpty({ message: 'You must provide a valid address.' })
   address: string;
 
+  @IsNotEmpty({ message: 'You must provide a time.' })
+  @IsString({ message: 'The time should be a string.' })
+  time: string;
+
   @IsNotEmpty({ message: 'You must provide a valide price.' })
   @IsNumber()
   price: number;

@@ -3,7 +3,7 @@ import { UsersRepository } from 'src/db/repositories';
 import * as argon2 from 'argon2';
 import { usersDTO } from './dto';
 import { JwtService } from '@nestjs/jwt';
-import { ErrorHandler } from 'src/shared/tools';
+import { CredentialsException, NotFoundException } from 'src/shared/tools';
 import { ConfigService } from '@nestjs/config';
 import { SinginValidator, SingupValidator } from './validator';
 import { UserSignup } from './types';
@@ -12,8 +12,8 @@ import { UserSignup } from './types';
 class AuthService {
   constructor(
     private readonly usersRepository: UsersRepository,
-    private jwt: JwtService,
-    private config: ConfigService,
+    private readonly jwt: JwtService,
+    private readonly config: ConfigService,
   ) {}
 
   async signup(user: SingupValidator): Promise<UserSignup> {
@@ -33,11 +33,9 @@ class AuthService {
     try {
       const { email, password } = user;
       const isUser = await this.usersRepository.findOne({ email });
-      if (!isUser)
-        throw new ErrorHandler({ message: 'The user do not exist', code: 11 });
+      if (!isUser) throw new NotFoundException();
       const pwdMatches = await argon2.verify(isUser.password, password);
-      if (!pwdMatches)
-        throw new ErrorHandler({ message: 'Credential error', code: 33 });
+      if (!pwdMatches) throw new CredentialsException();
       return this.signToken(isUser);
     } catch (error) {
       throw error;
